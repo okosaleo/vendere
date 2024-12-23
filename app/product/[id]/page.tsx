@@ -4,6 +4,7 @@ import { BuyButton } from "@/app/components/SubmitButton";
 import prisma from "@/app/lib/db";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import Image from "next/image";
+import { JSONContent } from "@tiptap/react";
 
 async function getData(id: string) {
     const data = await prisma.product.findUnique({

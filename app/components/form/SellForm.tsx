@@ -19,6 +19,7 @@ import { TipTapEditor } from "../Editor";
 import SelectCategory from "../SelectCategory";
 import { UploadDropzone } from "@/app/lib/uploadthings";
 import { Submitbutton } from "../SubmitButton";
+import { redirect } from "next/navigation";
 
 export function SellForm() {
   const initalState: State = { message: "", status: undefined };
@@ -30,6 +31,7 @@ export function SellForm() {
   useEffect(() => {
     if (state.status === "success") {
       toast.success(state.message);
+      redirect("/")
     } else if (state.status === "error") {
       toast.error(state.message);
     }

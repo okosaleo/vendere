@@ -145,11 +145,6 @@ export async function BuyProduct(formData: FormData) {
       price: true,
       images: true,
       productFile: true,
-      User: {
-        select: {
-          connectedAccountId: true,
-        },
-      },
     },
   });
 
@@ -169,25 +164,74 @@ export async function BuyProduct(formData: FormData) {
         quantity: 1,
       },
     ],
-    metadata: {
-      link: data?.productFile as string,
-    },
-
-    payment_intent_data: {
-      application_fee_amount: Math.round((data?.price as number) * 100) * 0.1,
-      transfer_data: {
-        destination: data?.User?.connectedAccountId as string,
-      },
-    },
     success_url:
       process.env.NODE_ENV === "development"
         ? "http://localhost:3000/payment/success"
-        : "https://marshal-ui-yt.vercel.app/payment/success",
+        : "",
     cancel_url:
       process.env.NODE_ENV === "development"
         ? "http://localhost:3000/payment/cancel"
-        : "https://marshal-ui-yt.vercel.app/payment/cancel",
+        : "",
   });
 
   return redirect(session.url as string);
+}
+
+export async function CreateStripeAccoutnLink() {
+  const { getUser } = getKindeServerSession();
+
+  const user = await getUser();
+
+  if (!user) {
+    throw new Error();
+  }
+
+  const data = await prisma.user.findUnique({
+    where: {
+      id: user.id,
+    },
+    select: {
+      connectedAccountId: true,
+    },
+  });
+
+  const accountLink = await stripe.accountLinks.create({
+    account: data?.connectedAccountId as string,
+    refresh_url:
+      process.env.NODE_ENV === "development"
+        ? `http://localhost:3000/billing`
+        : ``,
+    return_url:
+      process.env.NODE_ENV === "development"
+        ? `http://localhost:3000/return/${data?.connectedAccountId}`
+        : ``,
+    type: "account_onboarding",
+  });
+
+  return redirect(accountLink.url);
+}
+
+export async function GetStripeDashboardLink() {
+  const { getUser } = getKindeServerSession();
+
+  const user = await getUser();
+
+  if (!user) {
+    throw new Error();
+  }
+
+  const data = await prisma.user.findUnique({
+    where: {
+      id: user.id,
+    },
+    select: {
+      connectedAccountId: true,
+    },
+  });
+
+  const loginLink = await stripe.accounts.createLoginLink(
+    data?.connectedAccountId as string
+  );
+
+  return redirect(loginLink.url);
 }

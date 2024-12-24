@@ -6,7 +6,7 @@ import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface iAppProps {
-  category: "newest" | "templates" | "uikits" | "icons";
+  category: "newest" | "templates" | "fonts" | "icons";
 }
 
 async function getData({ category }: iAppProps) {
@@ -74,7 +74,7 @@ async function getData({ category }: iAppProps) {
         link: "/products/template",
       };
     }
-    case "uikits": {
+    case "fonts": {
       const data = await prisma.product.findMany({
         where: {
           category: "fonts",
@@ -90,9 +90,9 @@ async function getData({ category }: iAppProps) {
       });
 
       return {
-        title: "Ui Kits",
+        title: "Fonts",
         data: data,
-        link: "/products/uikit",
+        link: "/products/fonts",
       };
     }
     default: {

@@ -3,11 +3,11 @@
 import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Submitbutton } from "./SubmitButton";
 import { useFormState } from "react-dom";
-import { State, UpdateUserSettings } from "../actions";
 import { useEffect } from "react";
 import { toast } from "sonner";
+import { type State, UpdateUserSettings } from "@/app/actions";
+import { Submitbutton } from "../SubmitButton";
 
 
 interface UserCred {

@@ -1,4 +1,5 @@
-import NewestProducts from "./components/NewestProducts";
+
+import { ProductRow } from "./components/ProductRow";
 
 
 
@@ -12,7 +13,10 @@ export default function Home() {
         Vendere is the ultimate digital marketplace for creative assets, offering premium fonts, templates, and high-quality icons to elevate your projects. Unleash your creativity with Vendere&apos;s diverse and curated collection.
         </p>
       </div>
-      <NewestProducts />
+      <ProductRow category="newest" />
+      <ProductRow category="templates" />
+      <ProductRow category="fonts" />
+      <ProductRow category="icons" />
     </section>
   );
 }

@@ -86,12 +86,12 @@ export default function SignUpView() {
     }
 
     return (
-        <div className="flex flex-col items-center justify-center h-screen lg:w-1/2 w-full">
+        <div className="flex flex-col items-center justify-center h-screen  w-full">
             <div className="flex flex-col items-center justify-center">
                 <div className="relative w-58 h-58 ">
-                    <Image src="/conloquy.png" alt="Conloquy " fill />
+                    <Image src="/vendere.png" alt="Vendere logo " fill />
                 </div>
-                <p className="mt-[-77px] text-lg">Sign Up and harness the power of AI.</p>
+                <p className="mt-[-77px] text-lg">Sign up sell your products.</p>
             </div>
             <div className="lg:w-1/2 lg:p-0 w-full p-6">
                 <Form {...form}>
@@ -212,19 +212,14 @@ export default function SignUpView() {
                             <span className="bg-card px-2 z-10 relative text-muted-foreground">Or continue with</span>
                         </div>
                         
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="w-full gap-4">
                             <Button 
                                 onClick={() => onSocial("google")}
                                 disabled={pending} variant="outline" type="button" className="w-full">
                                 <Image src="/google.svg" alt="Google" width={20} height={20} className="mr-2" />
                                 Google
                             </Button>
-                            <Button
-                                onClick={() => onSocial("github")}
-                                disabled={pending} variant="outline" type="button" className="w-full">
-                                <Image src="/Github.svg" alt="GitHub" width={20} height={20} className="mr-2" />
-                                GitHub
-                            </Button>
+                            
                         </div>
                         
                         <div className="text-center text-sm">

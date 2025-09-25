@@ -69,10 +69,10 @@ export default function SignInView() {
 };
     
   return (
-     <div className="flex flex-col items-center justify-center lg:w-1/2 w-full">
+     <div className="flex flex-col items-center justify-center  w-full">
             <div className="flex flex-col items-center justify-center">
                 <div className="relative w-28 h-28 ">
-             <Image src="/redlogo.png" alt="red tower" fill className="rounded-full object-cover" />
+             <Image src="/vendere.png" alt="vendere" fill className="rounded-full object-cover" />
               </div>
               <p className=" text-lg">Welcome back, Sign In to your account.</p>
             </div>
@@ -120,7 +120,7 @@ export default function SignInView() {
                             : ("Sign In")}
                         </Button>
                         <div className="text-center text-sm">
-                            Don&apos;t have an account?{" "}<Link href="/sign-up" className="underline underline-offset-4">Sign up </Link><br /> OR <br />
+                            Don&apos;t have an account?{" "}<Link href="/sign-up" className="underline underline-offset-4">Sign up </Link>
                             </div>
                             <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">By clicking continue, you agree to our <a href="#">Terms of Service</a> and <a>Privacy Policy</a></div>
                     </form>

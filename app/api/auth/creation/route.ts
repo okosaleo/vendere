@@ -1,28 +1,28 @@
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+// api/creation/route.ts
 import { NextResponse } from "next/server";
 import { unstable_noStore as noStore } from "next/cache";
 import prisma from "@/app/lib/db";
 import { stripe } from "@/app/lib/stripe";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 export async function GET() {
     noStore();
-    const { getUser } = getKindeServerSession();
-    const user = await getUser();
+   const session = await auth.api.getSession({ headers: await headers() });
 
-  if (!user || user === null || !user.id) {
+  if (!session || session === null || !session.user.id) {
     throw new Error("Something went wrong...");
   }
 
   let dbUser = await prisma.user.findUnique({
     where: {
-      id: user.id,
+      id: session.user.id,
     },
   });
 
   if (!dbUser) {
-
     const account = await stripe.accounts.create({
-      email: user.email as string,
+      email: session.user.email as string,
       controller: {
         losses: {
           payments: "application",
@@ -35,19 +35,17 @@ export async function GET() {
         },
       },
     })
+
     dbUser = await prisma.user.create({
         data: {
-            id: user.id,
-            firstName: user.given_name ?? "",
-            lastName: user.family_name ?? "",
-            email: user.email ?? "",
-            profileImage:
-            user.picture ?? `https://avatar.vercel.sh/${user.given_name}`,
+            id: session.user.id,
+            name: session.user.name ?? "",
+            email: session.user.email ?? "",
+            profileImage: session.user.image ?? `https://avatar.vercel.sh/${session.user.name}`,
+            image: session.user.image ?? `https://avatar.vercel.sh/${session.user.name}`,
             connectedAccountId: account.id,
-
         }
     })
   }
   return NextResponse.redirect("http://localhost:3000")
 }
-

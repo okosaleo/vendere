@@ -1,3 +1,4 @@
+"use client"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,8 +10,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
+import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface iAppProps {
   email: string;
@@ -19,6 +21,16 @@ interface iAppProps {
 }
 
 export function UserNav({ email, name, userImage }: iAppProps) {
+ const router = useRouter()
+   const onLogout = async () => {
+         authClient.signOut({
+        fetchOptions:{
+            onSuccess: () => {
+                router.push('/sign-in')
+            }
+        }
+    })
+    }
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -55,7 +67,7 @@ export function UserNav({ email, name, userImage }: iAppProps) {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <LogoutLink>Log out</LogoutLink>
+          <Button variant="destructive" onClick={onLogout} className="w-full">Log Out</Button>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

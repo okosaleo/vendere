@@ -1,7 +1,10 @@
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+
 import prisma from "../lib/db"
 import ProductCard from "../components/ProductCard";
 import { unstable_noStore as noStore } from "next/cache";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 
 async function getData(userId: string) {
@@ -23,14 +26,13 @@ async function getData(userId: string) {
 
 export default async function ProsuctPage() {
   noStore();
-  const {getUser} = getKindeServerSession()
-  const user = await getUser();
+  const session = await auth.api.getSession({ headers: await headers() });
 
-  if(!user) {
-    throw new Error("Unauthorized")
+  if(!session) {
+    redirect("/sign-in")
   }
 
-  const data = await getData(user.id) 
+  const data = await getData(session.user.id) 
   return (
     <section className="max-w-7xl mx-auto px-4 md:px-8">
     <h1 className="text-2xl font-bold">My Products</h1>

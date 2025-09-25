@@ -5,6 +5,8 @@ import prisma from "./lib/db";
 import { type CategoryTypes } from "@prisma/client";
 import { stripe } from "./lib/stripe";
 import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 export type State = {
     status: "error" | "success" | undefined;
@@ -44,10 +46,8 @@ const userSettingsSchema = z.object({
   });
 
   export async function SellProduct(prevState: any, formData: FormData) {
-    const { getUser } = getKindeServerSession();
-    const user = await getUser();
-  
-    if (!user) {
+     const session = await auth.api.getSession({ headers: await headers() });
+    if (!session) {
       throw new Error("Something went wrong");
     }
   
@@ -80,7 +80,7 @@ const userSettingsSchema = z.object({
         images: validateFields.data.images,
         productFile: validateFields.data.productFile,
         description: JSON.parse(validateFields.data.description),
-        userId: user.id
+        userId: session.user.id
       }
     });
 
@@ -94,10 +94,9 @@ const userSettingsSchema = z.object({
     }
 
 export async function UpdateUserSettings(prevState: any, formData: FormData ) {
-  const {getUser} = getKindeServerSession()
-  const user = await getUser()
+   const session = await auth.api.getSession({ headers: await headers() });
 
-  if (!user) {
+  if (!session) {
     throw new Error( "Something went wrong!")
   }
 
@@ -117,11 +116,10 @@ export async function UpdateUserSettings(prevState: any, formData: FormData ) {
 
   const data = await prisma.user.update({
     where: {
-      id: user.id,
+      id: session.user.id,
     },
     data: {
-      firstName: validateFields.data.firstName,
-      lastName: validateFields.data.lastName,
+      name: validateFields.data.name,
     }
   });
 
@@ -178,17 +176,15 @@ export async function BuyProduct(formData: FormData) {
 }
 
 export async function CreateStripeAccoutnLink() {
-  const { getUser } = getKindeServerSession();
+   const session = await auth.api.getSession({ headers: await headers() });
 
-  const user = await getUser();
-
-  if (!user) {
+  if (!session) {
     throw new Error();
   }
 
   const data = await prisma.user.findUnique({
     where: {
-      id: user.id,
+      id: session.user.id,
     },
     select: {
       connectedAccountId: true,
@@ -212,17 +208,15 @@ export async function CreateStripeAccoutnLink() {
 }
 
 export async function GetStripeDashboardLink() {
-  const { getUser } = getKindeServerSession();
+   const session = await auth.api.getSession({ headers: await headers() });
 
-  const user = await getUser();
-
-  if (!user) {
+  if (!session) {
     throw new Error();
   }
 
   const data = await prisma.user.findUnique({
     where: {
-      id: user.id,
+      id: session.user.id,
     },
     select: {
       connectedAccountId: true,

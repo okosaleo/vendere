@@ -18,10 +18,15 @@ const geistMono = localFont({
   variable: "--font-geist-mono",
   weight: "100 900",
 });
-
+ 
 export const metadata: Metadata = {
   title: "Vendere",
-  description: "Vendere",
+  description: "Vendere - The Ultimate Marketplace for Buying and Selling Products",
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/icon.png",
+  },
 };
 
 export default function RootLayout({
@@ -32,6 +37,7 @@ export default function RootLayout({
   return (
     <AuthProvider>
     <html lang="en">
+    
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

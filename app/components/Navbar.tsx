@@ -3,14 +3,13 @@ import Link from "next/link";
 import NavbarLinks from "./NavbarLinks";
 import { Button } from "@/components/ui/button";
 import MobileMenu from "./MobileMenu";
-import { LoginLink, RegisterLink } from "@kinde-oss/kinde-auth-nextjs/components";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { UserNav } from "./UserNav";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 
 export default async function Navbar() {
-    const {getUser} = getKindeServerSession();
-    const user = await getUser()
+   const session = await auth.api.getSession({ headers: await headers() });
   return (
     <nav className="relative max-w-7xl w-full flex md:grid md:grid-cols-12 items-center px-4 md:px-8 mx-auto py-7">
         <div className="md:col-span-3 ">
@@ -20,18 +19,18 @@ export default async function Navbar() {
         </div>
         <NavbarLinks />
         <div className="flex items-center gap-x-2 ms-auto md:col-span-3">
-            {user ? (
-                <UserNav  email={user.email as string}
-                name={user.given_name as string}
+            {session?.user ? (
+                <UserNav  email={session.user.email as string}
+                name={session.user.name as string}
                 userImage={
-                  user.picture ?? `https://avatar.vercel.sh/${user.given_name}` } />
+                  session.user.image ?? `https://avatar.vercel.sh/${session.user.name}` } />
             ) : (
                 <div className="flex items-center gap-x-2">
                 <Button asChild>
-                <LoginLink>Login</LoginLink>
+                <Link href="/sign-in">Login</Link>
             </Button>
             <Button variant={"secondary"} asChild>
-                <RegisterLink>Register</RegisterLink>
+                <Link href="/sign-up">Sign Up</Link>
             </Button>
             </div>
             )}

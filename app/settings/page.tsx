@@ -1,8 +1,10 @@
 import { Card } from "@/components/ui/card";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import prisma from "../lib/db";
 import SettingsForm from "../components/form/SettingsForm";
 import { unstable_noStore as noStore } from "next/cache";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 
 async function getData(userId: string) {
@@ -11,8 +13,7 @@ async function getData(userId: string) {
             id: userId
         },
         select: {
-            firstName: true,
-            lastName: true,
+            name: true,
             email: true,
         }
     });
@@ -22,17 +23,16 @@ async function getData(userId: string) {
 
 export default async function SettingsPage() {
     noStore();
-    const {getUser} = getKindeServerSession()
-    const user = await getUser();
-    if(!user) {
-        throw new Error("Not Authorized")
+    const session = await auth.api.getSession({ headers: await headers() });
+    if(!session) {
+      return redirect("/sign-in")
     }
 
-    const data = await getData(user.id);
+    const data = await getData(session.user.id);
   return (
     <section className="max-w-7xl mx-auto px-4 md:px-8">
         <Card>
-            <SettingsForm firstName={data?.firstName as string} lastName={data?.lastName as string} email={data?.email as string}/>
+            <SettingsForm name={data?.name as string} email={data?.email as string}/>
         </Card>
     </section>
   )

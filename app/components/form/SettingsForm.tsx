@@ -11,12 +11,11 @@ import { Submitbutton } from "../SubmitButton";
 
 
 interface UserCred {
-    firstName: string;
-    lastName: string;
+    name: string;
     email: string;
 }
 
-export default function SettingsForm({email, firstName, lastName}: UserCred) {
+export default function SettingsForm({email, name }: UserCred) {
     const initialState: State = {message: "", status: undefined}
     const [state, formAction] = useFormState(UpdateUserSettings, initialState)
 
@@ -39,11 +38,7 @@ export default function SettingsForm({email, firstName, lastName}: UserCred) {
         <CardContent className="flex flex-col gap-y-5">
             <div className="flex flex-col gap-y-2"> 
                 <Label>First Name</Label>
-                <Input name="firstName" type="text" defaultValue={firstName} />
-            </div>
-            <div className="flex flex-col gap-y-2">
-                <Label>Last Name</Label>
-                <Input name="lastName" type="text" defaultValue={lastName} />
+                <Input name="firstName" type="text" defaultValue={name} />
             </div>
             <div className="flex flex-col gap-y-2">
                 <Label>Email</Label>

@@ -23,7 +23,7 @@ async function getData(id: string) {
             User: {
                 select: {
                     profileImage: true,
-                    firstName: true,
+                    name: true,
                 }
             }
         }

@@ -67,6 +67,23 @@ export default function SignInView() {
     }
   );
 };
+
+const onSocial = (provider: "google") => {
+        setPending(true);
+        setError(null);
+        authClient.signIn.social({
+            provider: provider,
+            callbackURL: "/",
+        },
+        {
+           
+            onError: ({error}) => {
+                setPending(false);
+                toast.error(error.message);
+                setError(error.message);
+            }
+        });
+    }
     
   return (
      <div className="flex flex-col items-center justify-center  w-full">
@@ -119,6 +136,15 @@ export default function SignInView() {
                             </p>) 
                             : ("Sign In")}
                         </Button>
+                                                <div className="w-full gap-4">
+                                                    <Button 
+                                                        onClick={() => onSocial("google")}
+                                                        disabled={pending} variant="outline" type="button" className="w-full">
+                                                        <Image src="/google.svg" alt="Google" width={20} height={20} className="mr-2" />
+                                                        Google
+                                                    </Button>
+                                                    
+                                                </div>
                         <div className="text-center text-sm">
                             Don&apos;t have an account?{" "}<Link href="/sign-up" className="underline underline-offset-4">Sign up </Link>
                             </div>

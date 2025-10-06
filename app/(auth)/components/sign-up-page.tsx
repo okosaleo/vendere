@@ -73,10 +73,7 @@ export default function SignUpView() {
             callbackURL: "/",
         },
         {
-            onSuccess: () => {
-                setPending(false);
-                toast.success("Account Created", { description: "Sign up successful!" });
-            },
+           
             onError: ({error}) => {
                 setPending(false);
                 toast.error(error.message);

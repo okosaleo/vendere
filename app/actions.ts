@@ -199,6 +199,10 @@ export async function CreateStripeAccoutnLink() {
     });
   }
 
+  if (!user.connectedAccountId) {
+  throw new Error("User has no connected Stripe account ID.");
+}
+
   // 🔹 Now safely create the account link
   const accountLink = await stripe.accountLinks.create({
     account: user.connectedAccountId,

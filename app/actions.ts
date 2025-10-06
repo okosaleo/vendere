@@ -164,11 +164,11 @@ export async function BuyProduct(formData: FormData) {
     success_url:
       process.env.NODE_ENV === "development"
         ? "http://localhost:3000/payment/success"
-        : "",
+        : "https://vendere.brimble.app/payment/cancel",
     cancel_url:
       process.env.NODE_ENV === "development"
         ? "http://localhost:3000/payment/cancel"
-        : "",
+        : "https://vendere.brimble.app/payment/cancel",
   });
 
   return redirect(session.url as string);
@@ -205,11 +205,11 @@ export async function CreateStripeAccoutnLink() {
     refresh_url:
       process.env.NODE_ENV === "development"
         ? `http://localhost:3000/billing`
-        : `https://yourdomain.com/billing`,
+        : `https://vendere.brimble.app/billing`,
     return_url:
       process.env.NODE_ENV === "development"
         ? `http://localhost:3000/return/${user.connectedAccountId}`
-        : `https://yourdomain.com/return/${user.connectedAccountId}`,
+        : `https://vendere.brimble.app/return/${user.connectedAccountId}`,
     type: "account_onboarding",
   });
 

@@ -76,6 +76,12 @@ const onSocial = (provider: "google") => {
             callbackURL: "/",
         },
         {
+
+             onSuccess: () => {
+        setPending(false);
+        router.push("/");
+        toast.success("Welcome Back!", { description: "Sign in successful!" });
+      },
            
             onError: ({error}) => {
                 setPending(false);

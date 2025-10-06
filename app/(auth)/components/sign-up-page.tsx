@@ -73,6 +73,12 @@ export default function SignUpView() {
             callbackURL: "/",
         },
         {
+
+             onSuccess: () => {
+                    setPending(false);
+                    router.push("/");
+                    toast.success("Welcome!", { description: "Sign up successful!" });
+                  },
            
             onError: ({error}) => {
                 setPending(false);

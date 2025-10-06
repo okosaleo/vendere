@@ -5,11 +5,13 @@ import {
     CardHeader,
     CardTitle,
   } from "@/components/ui/card";
-  import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
   import prisma from "../lib/db";
   import { CreateStripeAccoutnLink, GetStripeDashboardLink } from "../actions";
   import { unstable_noStore as noStore } from "next/cache";
 import { Submitbutton } from "../components/SubmitButton";
+import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
   
   async function getData(userId: string) {
     const data = await prisma.user.findUnique({
@@ -26,14 +28,17 @@ import { Submitbutton } from "../components/SubmitButton";
   
   export default async function BillingRoute() {
     noStore();
-    const { getUser } = getKindeServerSession();
-    const user = await getUser();
+    const session = await auth.api.getSession({ headers: await headers() });
+    
+      if(!session) {
+        redirect("/sign-in")
+      }
   
-    if (!user) {
+    if (!session) {
       throw new Error("Unauthorized");
     }
   
-    const data = await getData(user.id);
+    const data = await getData(session.user.id);
     return (
       <section className="max-w-7xl mx-auto px-4 md:px-8">
         <Card>

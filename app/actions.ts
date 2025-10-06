@@ -1,5 +1,4 @@
 "use server"
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { z } from "zod"
 import prisma from "./lib/db";
 import { type CategoryTypes } from "@prisma/client";
@@ -119,7 +118,7 @@ export async function UpdateUserSettings(prevState: any, formData: FormData ) {
       id: session.user.id,
     },
     data: {
-      name: validateFields.data.name,
+      name: validateFields.data.firstName,
     }
   });
 
@@ -176,31 +175,41 @@ export async function BuyProduct(formData: FormData) {
 }
 
 export async function CreateStripeAccoutnLink() {
-   const session = await auth.api.getSession({ headers: await headers() });
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) throw new Error("Unauthorized");
 
-  if (!session) {
-    throw new Error();
-  }
-
-  const data = await prisma.user.findUnique({
-    where: {
-      id: session.user.id,
-    },
-    select: {
-      connectedAccountId: true,
-    },
+  // 🔹 Get user
+  let user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { connectedAccountId: true },
   });
 
+  // 🔹 If the user doesn’t have a connected account, create one
+  if (!user?.connectedAccountId) {
+    const account = await stripe.accounts.create({
+      type: "express", // or "standard" if you want them to handle onboarding
+      email: session.user.email ?? undefined,
+    });
+
+    // Save the new Stripe account ID in your DB
+    user = await prisma.user.update({
+      where: { id: session.user.id },
+      data: { connectedAccountId: account.id },
+      select: { connectedAccountId: true },
+    });
+  }
+
+  // 🔹 Now safely create the account link
   const accountLink = await stripe.accountLinks.create({
-    account: data?.connectedAccountId as string,
+    account: user.connectedAccountId,
     refresh_url:
       process.env.NODE_ENV === "development"
         ? `http://localhost:3000/billing`
-        : ``,
+        : `https://yourdomain.com/billing`,
     return_url:
       process.env.NODE_ENV === "development"
-        ? `http://localhost:3000/return/${data?.connectedAccountId}`
-        : ``,
+        ? `http://localhost:3000/return/${user.connectedAccountId}`
+        : `https://yourdomain.com/return/${user.connectedAccountId}`,
     type: "account_onboarding",
   });
 

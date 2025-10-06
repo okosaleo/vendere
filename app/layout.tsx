@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "./components/Navbar";
-import { AuthProvider } from "./AuthProvider";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "./api/uploadthing/core";
@@ -35,7 +34,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <AuthProvider>
     <html lang="en">
     
       <body
@@ -49,6 +47,5 @@ export default function RootLayout({
         <Toaster richColors theme="system" closeButton />
       </body>
     </html>
-    </AuthProvider>
   );
 }

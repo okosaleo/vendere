@@ -65,7 +65,7 @@ export default function SignUpView() {
         });
     }
 
-    const onSocial = (provider: "github" | "google") => {
+    const onSocial = (provider: "google") => {
         setPending(true);
         setError(null);
         authClient.signIn.social({
